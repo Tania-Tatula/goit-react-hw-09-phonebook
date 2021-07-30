@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useState } from "react";
 import { authOperations } from "../redux/auth";
 import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 
 const styles = {
   form: {
@@ -15,68 +15,60 @@ const styles = {
   },
 };
 
-class LoginPage extends Component {
-  state = {
-    email: "",
-    password: "",
+export default function LoginPage(logIn) {
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
-  handleChange = ({ target: { name, value } }) => {
-    this.setState({ [name]: value });
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(email);
 
-    this.props.onLogin(this.state);
+    dispatch(authOperations.logIn({ email, password }));
 
-    this.setState({ name: "", email: "", password: "" });
+    setEmail("");
+    setPassword("");
   };
 
-  render() {
-    const { email, password } = this.state;
+  return (
+    <div>
+      <h1 className="title">Страница логина</h1>
+      <div className="container">
+        <Form onSubmit={handleSubmit} style={styles.form} autoComplete="off">
+          <Form.Label style={styles.label}>
+            Почта
+            <Form.Control
+              type="email"
+              name="email"
+              value={email}
+              onChange={handleEmailChange}
+            />
+          </Form.Label>
 
-    return (
-      <div>
-        <h1 className="title">Страница логина</h1>
-        <div className="container">
-          <Form
-            onSubmit={this.handleSubmit}
-            style={styles.form}
-            autoComplete="off"
-          >
-            <Form.Label style={styles.label}>
-              Почта
-              <Form.Control
-                type="email"
-                name="email"
-                value={email}
-                onChange={this.handleChange}
-              />
-            </Form.Label>
+          <Form.Label style={styles.label}>
+            Пароль
+            <Form.Control
+              type="password"
+              name="password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </Form.Label>
 
-            <Form.Label style={styles.label}>
-              Пароль
-              <Form.Control
-                type="password"
-                name="password"
-                value={password}
-                onChange={this.handleChange}
-              />
-            </Form.Label>
-
-            <Button variant="outline-success" type="submit">
-              Войти
-            </Button>
-          </Form>
-        </div>
+          <Button variant="outline-success" type="submit">
+            Войти
+          </Button>
+        </Form>
       </div>
-    );
-  }
+    </div>
+  );
 }
-
-const mapDispatchToProps = {
-  onLogin: authOperations.logIn,
-};
-
-export default connect(null, mapDispatchToProps)(LoginPage);
