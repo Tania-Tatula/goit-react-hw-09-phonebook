@@ -31,7 +31,6 @@ export default function LoginPage(logIn) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(email);
 
     dispatch(authOperations.logIn({ email, password }));
 
